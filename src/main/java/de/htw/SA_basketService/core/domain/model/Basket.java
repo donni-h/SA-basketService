@@ -1,6 +1,7 @@
 package de.htw.SA_basketService.core.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -22,6 +23,7 @@ public class Basket {
     @NotNull(message = "userId cannot be null")
     private UUID userId;
 
+    @Valid
     @NotNull(message = "Items cannot be null")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "userId")
