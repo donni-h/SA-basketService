@@ -29,8 +29,8 @@ public class BasketProducer {
         this.mapper = mapper;
     }
 
-    public void changeAmountOfPlant(UUID itemId, int difference){
-        PlantChangeDTO plantChangeDTO = mapper.getPlantChangeDTO(itemId, difference);
+    public void changeAmountOfPlant(UUID plantId, int difference){
+        PlantChangeDTO plantChangeDTO = mapper.getPlantChangeDTO(plantId, difference);
         LOGGER.info(String.format("sent message -> %s", plantChangeDTO.toString()));
         rabbitTemplate.convertAndSend(exchange, routingKey, plantChangeDTO);
     }

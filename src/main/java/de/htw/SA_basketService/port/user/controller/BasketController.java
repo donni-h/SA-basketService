@@ -32,6 +32,7 @@ public class BasketController {
     @PostMapping(path = "/basket")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Basket createBasket(Authentication connectedUser) throws BasketAlreadyExistsException {
+        System.out.println(connectedUser.getName());
         return basketService.createBasket(connectedUser.getName());
     }
 
@@ -54,19 +55,24 @@ public class BasketController {
             @RequestBody
             Item item,
             Authentication connectedUser) throws UsernameNotFoundException {
-        basketProducer.changeAmountOfPlant(item.getItemId(), -1);
-        return basketService.addItemToBasket(item, connectedUser.getName());
+        if (item.getItemId()!=null) throw new IllegalArgumentException("Item ID is created automatically and " +
+                "should not be given.");
+        Basket basket = basketService.addItemToBasket(item, connectedUser.getName());
+        basketProducer.changeAmountOfPlant(item.getPlantId(), -1);
+        return basket;
     }
 
-    @PutMapping(path = "/basket/removeitem/{itemId}")
+    @PutMapping(path = "/basket/removeitem")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Basket removeItemFromBasket(
-            @PathVariable("itemId")
-            @NotNull(message = "itemId cannot be null")
-            UUID itemId,
+            @Valid
+            @RequestBody
+            Item item,
             Authentication connectedUser) throws UsernameNotFoundException, ItemIdNotFoundException{
-        basketProducer.changeAmountOfPlant(itemId, 1);
-        return basketService.removeItemFromBasket(itemId, connectedUser.getName());
+
+        Basket basket = basketService.removeItemFromBasket(item.getItemId(), connectedUser.getName());
+        basketProducer.changeAmountOfPlant(item.getPlantId(), 1);
+        return basket;
     }
     @PutMapping(path = "/basket/removeallitems")
     @ResponseStatus(HttpStatus.OK)
