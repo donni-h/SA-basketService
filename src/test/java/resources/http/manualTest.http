@@ -1,0 +1,46 @@
+###
+#createBasket()
+POST http://localhost:8080/basket/fd05631a-22d3-4376-b511-48fdd324b12b
+Content-Type: application/json
+
+###
+#getBasketByUserId()
+GET http://localhost:8080/basket/fd05631a-22d3-4376-b511-48fdd324b12b
+Content-Type: application/json
+
+###
+#getAllBaskets()
+GET http://localhost:8080/baskets
+Content-Type: application/json
+
+###
+#addItemToBasket()
+PUT http://localhost:8080/basket/additem/fd05631a-22d3-4376-b511-48fdd324b12b
+Content-Type: application/json
+
+{
+  "itemId": "fd05631a-22d3-2376-b511-48fdd123b22c",
+  "name": "PRODUKT 9000",
+  "itemPrice": 200.00,
+  "imageLink": "http://example.com/image9000.jpg"
+}
+
+###
+#removeItemFromBasket()
+PUT http://localhost:8080/basket/fd05631a-22d3-4376-b511-48fdd324b22b/removeitem/fd05631a-22d3-2376-b511-48fdd123b22c
+Content-Type: application/json
+
+###
+#removeAllItemsFromBasket()
+PUT http://localhost:8080/basket/removeallitems/fd05631a-22d3-4376-b511-48fdd324b22b
+Content-Type: application/json
+
+###
+#deleteBasket()
+DELETE http://localhost:8080/basket/fd05631a-22d3-4376-b511-48fdd324b22b
+Content-Type: application/json
+
+###
+#deleteAllBaskets()
+DELETE http://localhost:8080/baskets
+Content-Type: application/json
