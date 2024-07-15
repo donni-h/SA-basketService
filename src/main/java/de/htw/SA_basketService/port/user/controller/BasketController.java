@@ -3,6 +3,7 @@ package de.htw.SA_basketService.port.user.controller;
 import de.htw.SA_basketService.core.domain.model.Basket;
 import de.htw.SA_basketService.core.domain.model.Item;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketService;
+import de.htw.SA_basketService.port.producer.BasketProducer;
 import de.htw.SA_basketService.port.user.exception.BasketAlreadyExistsException;
 import de.htw.SA_basketService.port.user.exception.ItemIdNotFoundException;
 import de.htw.SA_basketService.port.user.exception.UsernameNotFoundException;
@@ -21,9 +22,11 @@ import java.util.UUID;
 @Validated
 public class BasketController {
     private final IBasketService basketService;
+    private final BasketProducer basketProducer;
     @Autowired
-    public BasketController(IBasketService basketService){
+    public BasketController(IBasketService basketService, BasketProducer basketProducer){
         this.basketService = basketService;
+        this.basketProducer = basketProducer;
     }
 
     @PostMapping(path = "/basket")
@@ -51,6 +54,7 @@ public class BasketController {
             @RequestBody
             Item item,
             Authentication connectedUser) throws UsernameNotFoundException {
+        basketProducer.changeAmountOfPlant(item.getItemId(), -1);
         return basketService.addItemToBasket(item, connectedUser.getName());
     }
 
@@ -61,6 +65,7 @@ public class BasketController {
             @NotNull(message = "itemId cannot be null")
             UUID itemId,
             Authentication connectedUser) throws UsernameNotFoundException, ItemIdNotFoundException{
+        basketProducer.changeAmountOfPlant(itemId, 1);
         return basketService.removeItemFromBasket(itemId, connectedUser.getName());
     }
     @PutMapping(path = "/basket/removeallitems")
