@@ -2,7 +2,7 @@ package de.htw.SA_basketService.port.user.advice;
 
 import de.htw.SA_basketService.port.user.exception.BasketAlreadyExistsException;
 import de.htw.SA_basketService.port.user.exception.ItemIdNotFoundException;
-import de.htw.SA_basketService.port.user.exception.UserIdNotFoundException;
+import de.htw.SA_basketService.port.user.exception.UsernameNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(UserIdNotFoundException.class)
+    @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Map<String, String>> handleUserIdNotFoundException(UserIdNotFoundException exception){
+    public ResponseEntity<Map<String, String>> handleUsernameNotFoundException(UsernameNotFoundException exception){
         Map<String, String> error = new HashMap<>();
         error.put("error", exception.getMessage());
         return ResponseEntity

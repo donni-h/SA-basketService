@@ -9,5 +9,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface IBasketRepository extends JpaRepository<Basket, UUID> {
+public interface IBasketRepository extends JpaRepository<Basket, String> {
 }

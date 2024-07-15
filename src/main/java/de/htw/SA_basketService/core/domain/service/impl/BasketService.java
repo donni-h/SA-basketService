@@ -6,13 +6,12 @@ import de.htw.SA_basketService.core.domain.service.interfaces.IBasketRepository;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketService;
 import de.htw.SA_basketService.port.user.exception.BasketAlreadyExistsException;
 import de.htw.SA_basketService.port.user.exception.ItemIdNotFoundException;
-import de.htw.SA_basketService.port.user.exception.UserIdNotFoundException;
+import de.htw.SA_basketService.port.user.exception.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,16 +25,16 @@ public class BasketService implements IBasketService {
     }
 
     @Override
-    public Basket createBasket(UUID userId) throws BasketAlreadyExistsException{
-        if(basketRepository.existsById(userId)) throw new BasketAlreadyExistsException(userId);
-        Basket basket = new Basket(userId);
+    public Basket createBasket(String username) throws BasketAlreadyExistsException{
+        if(basketRepository.existsById(username)) throw new BasketAlreadyExistsException(username);
+        Basket basket = new Basket(username);
         return basketRepository.save(basket);
     }
 
     @Override
-    public Basket getBasketByUserId(UUID userId) throws UserIdNotFoundException{
-        return basketRepository.findById(userId)
-                .orElseThrow(() -> new UserIdNotFoundException(userId));
+    public Basket getBasketByUsername(String username) throws UsernameNotFoundException {
+        return basketRepository.findById(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override
@@ -45,8 +44,8 @@ public class BasketService implements IBasketService {
 
     @Transactional
     @Override
-    public Basket addItemToBasket(Item item, UUID userId) throws UserIdNotFoundException{
-        Basket existingBasket = getBasketByUserId(userId);
+    public Basket addItemToBasket(Item item, String username) throws UsernameNotFoundException {
+        Basket existingBasket = getBasketByUsername(username);
         existingBasket.getItems().add(item);
         updateTotalPrice(existingBasket, item.getItemPrice(), "add");
         return existingBasket;
@@ -54,12 +53,12 @@ public class BasketService implements IBasketService {
 
     @Transactional
     @Override
-    public Basket removeItemFromBasket(UUID itemId, UUID userId) throws UserIdNotFoundException,
+    public Basket removeItemFromBasket(UUID itemId, String username) throws UsernameNotFoundException,
             ItemIdNotFoundException{
-        Basket existingBasket = getBasketByUserId(userId);
+        Basket existingBasket = getBasketByUsername(username);
 
         Item itemToDelete = findItemById(existingBasket.getItems(), itemId);
-        removeItemFromList(existingBasket.getItems(), itemToDelete);
+        existingBasket.getItems().remove(itemToDelete);
         updateTotalPrice(existingBasket, itemToDelete.getItemPrice(), "subtract");
 
         return existingBasket;
@@ -67,17 +66,17 @@ public class BasketService implements IBasketService {
 
     @Transactional
     @Override
-    public Basket removeAllItemsFromBasket(UUID userId) throws UserIdNotFoundException{
-        Basket existingBasket = getBasketByUserId(userId);
+    public Basket removeAllItemsFromBasket(String username) throws UsernameNotFoundException {
+        Basket existingBasket = getBasketByUsername(username);
         existingBasket.getItems().clear();
         existingBasket.setTotalPrice(BigDecimal.ZERO);
         return existingBasket;
     }
 
     @Override
-    public void deleteBasket(UUID userId) throws UserIdNotFoundException{
-        if(!basketRepository.existsById(userId)) throw new UserIdNotFoundException(userId);
-        basketRepository.deleteById(userId);
+    public void deleteBasket(String username) throws UsernameNotFoundException {
+        if(!basketRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        basketRepository.deleteById(username);
     }
 
     @Override
@@ -90,10 +89,6 @@ public class BasketService implements IBasketService {
                 .filter(item -> item.getItemId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new ItemIdNotFoundException(itemId));
-    }
-
-    private void removeItemFromList(List<Item> items, Item itemToDelete) {
-        items.remove(itemToDelete);
     }
 
     private void updateTotalPrice(Basket basket, BigDecimal itemPrice, String mode) {

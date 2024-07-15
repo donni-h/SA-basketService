@@ -21,21 +21,21 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Basket {
     @Id
-    @NotNull(message = "userId cannot be null")
-    private UUID userId;
+    @NotNull(message = "username cannot be null")
+    private String username;
 
     @Valid
     @NotNull(message = "Items cannot be null")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "username")
     private List<Item> items;
 
     @NotNull (message = "totalPrice cannot be null")
     @PositiveOrZero(message = "totalPrice has to be positive or zero")
     private BigDecimal totalPrice;
 
-    public Basket(UUID userId) {
-        this.userId = userId;
+    public Basket(String username) {
+        this.username = username;
         this.items = new ArrayList<>();
         this.totalPrice = BigDecimal.ZERO;
     }
