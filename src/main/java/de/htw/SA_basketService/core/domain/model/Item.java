@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @NotNull
     private UUID itemId;
 
     @NotNull(message = "name cannot be null")
