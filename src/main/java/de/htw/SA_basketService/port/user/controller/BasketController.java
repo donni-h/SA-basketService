@@ -32,6 +32,7 @@ public class BasketController {
     @PostMapping(path = "/basket")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Basket createBasket(Authentication connectedUser) throws BasketAlreadyExistsException {
+        System.out.println(connectedUser.getName());
         return basketService.createBasket(connectedUser.getName());
     }
 
@@ -54,8 +55,10 @@ public class BasketController {
             @RequestBody
             Item item,
             Authentication connectedUser) throws UsernameNotFoundException {
+
+        Basket basket = basketService.addItemToBasket(item, connectedUser.getName());
         basketProducer.changeAmountOfPlant(item.getItemId(), -1);
-        return basketService.addItemToBasket(item, connectedUser.getName());
+        return basket;
     }
 
     @PutMapping(path = "/basket/removeitem/{itemId}")
@@ -65,8 +68,10 @@ public class BasketController {
             @NotNull(message = "itemId cannot be null")
             UUID itemId,
             Authentication connectedUser) throws UsernameNotFoundException, ItemIdNotFoundException{
+
+        Basket basket = basketService.removeItemFromBasket(itemId, connectedUser.getName());
         basketProducer.changeAmountOfPlant(itemId, 1);
-        return basketService.removeItemFromBasket(itemId, connectedUser.getName());
+        return basket;
     }
     @PutMapping(path = "/basket/removeallitems")
     @ResponseStatus(HttpStatus.OK)
