@@ -4,6 +4,7 @@ import de.htw.SA_basketService.core.domain.model.Basket;
 import de.htw.SA_basketService.core.domain.model.Item;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketRepository;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketService;
+import de.htw.SA_basketService.port.producer.BasketProducer;
 import de.htw.SA_basketService.port.user.exception.BasketAlreadyExistsException;
 import de.htw.SA_basketService.port.user.exception.ItemIdNotFoundException;
 import de.htw.SA_basketService.port.user.exception.UsernameNotFoundException;
@@ -18,10 +19,12 @@ import java.util.UUID;
 @Service
 public class BasketService implements IBasketService {
     private final IBasketRepository basketRepository;
+    private final BasketProducer basketProducer;
 
     @Autowired
-    public BasketService(IBasketRepository basketRepository){
+    public BasketService(IBasketRepository basketRepository, BasketProducer basketProducer){
         this.basketRepository = basketRepository;
+        this.basketProducer = basketProducer;
     }
 
     @Override
@@ -68,6 +71,7 @@ public class BasketService implements IBasketService {
     @Override
     public Basket removeAllItemsFromBasket(String username) throws UsernameNotFoundException {
         Basket existingBasket = getBasketByUsername(username);
+        notifyPlantService(existingBasket.getItems());
         existingBasket.getItems().clear();
         existingBasket.setTotalPrice(BigDecimal.ZERO);
         return existingBasket;
@@ -75,12 +79,17 @@ public class BasketService implements IBasketService {
 
     @Override
     public void deleteBasket(String username) throws UsernameNotFoundException {
-        if(!basketRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        Basket existingBasket = getBasketByUsername(username);
+        notifyPlantService(existingBasket.getItems());
         basketRepository.deleteById(username);
     }
 
     @Override
     public void deleteAllBaskets() {
+        List<Basket> baskets = basketRepository.findAll();
+        for (Basket basket: baskets){
+            notifyPlantService(basket.getItems());
+        }
         basketRepository.deleteAll();
     }
 
@@ -95,5 +104,11 @@ public class BasketService implements IBasketService {
         BigDecimal currentTotalPrice = basket.getTotalPrice();
         if (mode.equals("add")) basket.setTotalPrice(currentTotalPrice.add(itemPrice));
         if (mode.equals("subtract")) basket.setTotalPrice(currentTotalPrice.subtract(itemPrice));
+    }
+
+    private void notifyPlantService(List<Item> items){
+        for (Item item: items){
+            basketProducer.changeAmountOfPlant(item.getPlantId(), 1);
+        }
     }
 }
