@@ -7,9 +7,9 @@ import java.util.UUID;
 
 @Service
 public class ItemToPlantDTOMapper {
-    public PlantChangeDTO getPlantChangeDTO(UUID itemId, int difference){
+    public PlantChangeDTO getPlantChangeDTO(UUID plantId, int difference){
         PlantChangeDTO plantChangeDTO = new PlantChangeDTO();
-        plantChangeDTO.setPlantId(itemId);
+        plantChangeDTO.setPlantId(plantId);
         plantChangeDTO.setChangeAmount(difference);
         return plantChangeDTO;
     }
