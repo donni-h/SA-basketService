@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,4 +33,10 @@ public class Basket {
     @NotNull (message = "totalPrice cannot be null")
     @PositiveOrZero(message = "totalPrice has to be positive or zero")
     private BigDecimal totalPrice;
+
+    public Basket(UUID userId) {
+        this.userId = userId;
+        this.items = new ArrayList<>();
+        this.totalPrice = BigDecimal.ZERO;
+    }
 }

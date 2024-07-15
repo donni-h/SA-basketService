@@ -4,6 +4,7 @@ import de.htw.SA_basketService.core.domain.model.Basket;
 import de.htw.SA_basketService.core.domain.model.Item;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketRepository;
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketService;
+import de.htw.SA_basketService.port.producer.BasketProducer;
 import de.htw.SA_basketService.port.user.exception.BasketAlreadyExistsException;
 import de.htw.SA_basketService.port.user.exception.ItemIdNotFoundException;
 import de.htw.SA_basketService.port.user.exception.UserIdNotFoundException;
@@ -26,15 +27,18 @@ public class BasketController {
         this.basketService = basketService;
     }
 
-    @PostMapping(path = "/basket")
+    @PostMapping(path = "/basket/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Basket createBasket(@Valid @RequestBody Basket basket) throws BasketAlreadyExistsException {
-        return basketService.createBasket(basket);
+    public @ResponseBody Basket createBasket(
+            @PathVariable("userId")
+            @NotNull(message = "userId cannot be null")
+            UUID userId) throws BasketAlreadyExistsException {
+        return basketService.createBasket(userId);
     }
 
     @GetMapping(path = "/basket/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Basket getBasketForUserName(
+    public @ResponseBody Basket getBasketByUserId(
             @PathVariable("userId")
             @NotNull(message = "userId cannot be null")
             UUID userId) throws UserIdNotFoundException {

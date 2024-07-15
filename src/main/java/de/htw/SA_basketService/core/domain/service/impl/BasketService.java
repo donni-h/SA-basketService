@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,9 +26,9 @@ public class BasketService implements IBasketService {
     }
 
     @Override
-    public Basket createBasket(Basket basket) throws BasketAlreadyExistsException{
-        UUID userId = basket.getUserId();
+    public Basket createBasket(UUID userId) throws BasketAlreadyExistsException{
         if(basketRepository.existsById(userId)) throw new BasketAlreadyExistsException(userId);
+        Basket basket = new Basket(userId);
         return basketRepository.save(basket);
     }
 

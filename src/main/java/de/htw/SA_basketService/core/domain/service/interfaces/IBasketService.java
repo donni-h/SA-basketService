@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IBasketService {
-    Basket createBasket(Basket basket) throws BasketAlreadyExistsException;
+    Basket createBasket(UUID userId) throws BasketAlreadyExistsException;
     Basket getBasketByUserId(UUID userId) throws UserIdNotFoundException;
     List<Basket> getAllBaskets();
 
