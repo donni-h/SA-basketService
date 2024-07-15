@@ -18,4 +18,4 @@ ARG DEPENDENCY=/app/target/dependency
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","de.htw.saplantservice.SaBasketServiceApplication"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","de.htw.SA_basketService.SaBasketServiceApplication"]
