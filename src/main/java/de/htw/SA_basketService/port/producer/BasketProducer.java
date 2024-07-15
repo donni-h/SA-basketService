@@ -1,9 +1,9 @@
 package de.htw.SA_basketService.port.producer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.htw.SA_basketService.port.dto.PlantChangeDTO;
 import de.htw.SA_basketService.port.dtomapper.ItemToPlantDTOMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +15,12 @@ import java.util.UUID;
 public class BasketProducer {
     private final RabbitTemplate rabbitTemplate;
     private final ItemToPlantDTOMapper mapper;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasketProducer.class);
 
-    @Value("basket_exchange")
+    @Value("${rabbitmq.exchange.name}")
     private String exchange;
 
-    @Value("basket.ToPlant")
+    @Value("${rabbitmq.routingKey.name}")
     private String routingKey;
 
     @Autowired
@@ -30,13 +31,7 @@ public class BasketProducer {
 
     public void changeAmountOfPlant(UUID itemId, int difference){
         PlantChangeDTO plantChangeDTO = mapper.getPlantChangeDTO(itemId, difference);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String message;
-        try {
-            message = objectMapper.writeValueAsString(plantChangeDTO);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+        LOGGER.info(String.format("sent message -> %s", plantChangeDTO.toString()));
+        rabbitTemplate.convertAndSend(exchange, routingKey, plantChangeDTO);
     }
 }
