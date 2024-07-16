@@ -39,4 +39,28 @@ public class Basket {
         this.items = new ArrayList<>();
         this.totalPrice = BigDecimal.ZERO;
     }
+
+    public Basket(String username, List<Item> items, BigDecimal totalPrice) {
+        this.username = username;
+        this.items = items;
+        this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        Basket basket = (Basket) o;
+        List<Item> compareBasketItems = basket.getItems();
+        Boolean itemsEqual = true;
+        for (Item item: this.getItems()){
+            if (!compareBasketItems.contains(item)){
+                itemsEqual = false;
+                break;
+            }
+        }
+        return itemsEqual
+                && this.getUsername().equals(basket.getUsername())
+                && this.getTotalPrice().equals(basket.getTotalPrice());
+    }
 }

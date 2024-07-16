@@ -35,14 +35,16 @@ public class Item {
     @NotNull (message = "Image link cannot be null")
     private String imageLink;
 
-    public Item(UUID itemId, String name, BigDecimal itemPrice, String imageLink) {
+    public Item(UUID itemId, UUID plantId, String name, BigDecimal itemPrice, String imageLink) {
         this.itemId = itemId;
+        this.plantId = plantId;
         this.name = name;
         this.itemPrice = itemPrice;
         this.imageLink = imageLink;
     }
 
-    public Item(String name, BigDecimal itemPrice, String imageLink) {
+    public Item(UUID plantId, String name, BigDecimal itemPrice, String imageLink) {
+        this.plantId = plantId;
         this.name = name;
         this.itemPrice = itemPrice;
         this.imageLink = imageLink;
@@ -56,5 +58,16 @@ public class Item {
                 ", itemPrice=" + itemPrice +
                 ", imageLink='" + imageLink + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return this.getPlantId().equals(item.getPlantId())
+                && this.getName().equals(item.getName())
+                && this.getItemPrice().equals(item.getItemPrice())
+                && this.getImageLink().equals(item.getImageLink());
     }
 }
