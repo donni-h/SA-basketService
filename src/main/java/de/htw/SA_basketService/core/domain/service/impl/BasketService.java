@@ -71,7 +71,17 @@ public class BasketService implements IBasketService {
     @Override
     public Basket removeAllItemsFromBasket(String username) throws UsernameNotFoundException {
         Basket existingBasket = getBasketByUsername(username);
-        notifyPlantService(existingBasket.getItems());
+        notifyPlantService(existingBasket.getItems(), 1);
+        existingBasket.getItems().clear();
+        existingBasket.setTotalPrice(BigDecimal.ZERO);
+        return existingBasket;
+    }
+
+    @Transactional
+    @Override
+    public Basket removeAllItemsAfterCheckout(String username) throws UsernameNotFoundException {
+        Basket existingBasket = getBasketByUsername(username);
+        notifyPlantService(existingBasket.getItems(), -1);
         existingBasket.getItems().clear();
         existingBasket.setTotalPrice(BigDecimal.ZERO);
         return existingBasket;
@@ -80,7 +90,7 @@ public class BasketService implements IBasketService {
     @Override
     public void deleteBasket(String username) throws UsernameNotFoundException {
         Basket existingBasket = getBasketByUsername(username);
-        notifyPlantService(existingBasket.getItems());
+        notifyPlantService(existingBasket.getItems(), 1);
         basketRepository.deleteById(username);
     }
 
@@ -88,7 +98,7 @@ public class BasketService implements IBasketService {
     public void deleteAllBaskets() {
         List<Basket> baskets = basketRepository.findAll();
         for (Basket basket: baskets){
-            notifyPlantService(basket.getItems());
+            notifyPlantService(basket.getItems(), 1);
         }
         basketRepository.deleteAll();
     }
@@ -106,9 +116,9 @@ public class BasketService implements IBasketService {
         if (mode.equals("subtract")) basket.setTotalPrice(currentTotalPrice.subtract(itemPrice));
     }
 
-    private void notifyPlantService(List<Item> items){
+    private void notifyPlantService(List<Item> items, int difference){
         for (Item item: items){
-            basketProducer.changeAmountOfPlant(item.getPlantId(), 1);
+            basketProducer.changeAmountOfPlant(item.getPlantId(), difference);
         }
     }
 }

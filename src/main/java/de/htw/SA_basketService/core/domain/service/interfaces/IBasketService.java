@@ -17,6 +17,7 @@ public interface IBasketService {
     Basket addItemToBasket(Item item, String username) throws UsernameNotFoundException;
 
     Basket removeItemFromBasket(UUID itemId, String username) throws UsernameNotFoundException, ItemIdNotFoundException;
+    Basket removeAllItemsAfterCheckout(String username) throws UsernameNotFoundException;
 
     Basket removeAllItemsFromBasket(String username) throws UsernameNotFoundException;
 
