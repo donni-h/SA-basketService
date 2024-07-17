@@ -19,7 +19,7 @@ PUT http://localhost:8080/basket/additem/fd05631a-22d3-4376-b511-48fdd324b12b
 Content-Type: application/json
 
 {
-  "itemId": "fd05631a-22d3-2376-b511-48fdd123b22c",
+  "plantId": "fd05631a-22d3-2376-b511-48fdd123b22c",
   "name": "PRODUKT 9000",
   "itemPrice": 200.00,
   "imageLink": "http://example.com/image9000.jpg"
