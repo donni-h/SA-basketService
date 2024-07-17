@@ -1,6 +1,8 @@
 package de.htw.SA_basketService.port.consumer;
 
 import de.htw.SA_basketService.core.domain.service.interfaces.IBasketService;
+import de.htw.SA_basketService.port.dto.CheckoutDto;
+import de.htw.SA_basketService.port.dto.CheckoutStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,16 +18,9 @@ public class BasketConsumer {
     @Autowired
     private IBasketService basketService;
 
-    @RabbitListener(queues = {"${rabbitmq.queue.name}"})
-    public void consumeMessage() {
+    @RabbitListener(queues = {"${rabbitmq.checkoutQueue.name}"})
+    public void consumeMessage(CheckoutDto checkoutDto) {
         LOGGER.info("Message From Checkout Received");
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            String username = authentication.getName();
-            basketService.removeAllItemsAfterCheckout(username);
-        } else {
-            LOGGER.warn("Authentication object is null, cannot remove items from basket");
-        }
+        basketService.removeAllItemsAfterCheckout(checkoutDto.getUsername());
     }
 }

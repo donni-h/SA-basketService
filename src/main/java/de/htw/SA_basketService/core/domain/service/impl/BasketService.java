@@ -81,7 +81,6 @@ public class BasketService implements IBasketService {
     @Override
     public Basket removeAllItemsAfterCheckout(String username) throws UsernameNotFoundException {
         Basket existingBasket = getBasketByUsername(username);
-        notifyPlantService(existingBasket.getItems(), -1);
         existingBasket.getItems().clear();
         existingBasket.setTotalPrice(BigDecimal.ZERO);
         return existingBasket;

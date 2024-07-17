@@ -91,4 +91,11 @@ public class BasketController {
         basketService.deleteAllBaskets();
     }
 
+    @GetMapping(path="/basket/test")
+    @ResponseStatus(HttpStatus.OK)
+    public void testBasket(){
+        var uuid = UUID.randomUUID();
+        basketProducer.changeAmountOfPlant(uuid, 1);
+    }
+
 }
