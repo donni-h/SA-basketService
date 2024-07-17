@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class CheckoutDto {
     private String username;
-    private CheckoutStatus status;
+    private String status;
 }
