@@ -66,14 +66,14 @@ public class BasketControllerTest {
     }
 
     @Test
-    void connectionEstablished() {
+    void connectionEstablishedTest() {
         assertThat(postgres.isCreated()).isTrue();
         assertThat(postgres.isRunning()).isTrue();
     }
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void createBasket() throws Exception {
+    void createBasketTest() throws Exception {
         mockMvc.perform(post("/basket")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -82,7 +82,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void addItemToBasket() throws Exception {
+    void addItemToBasketTest() throws Exception {
         // First create a basket
         mockMvc.perform(post("/basket"));
 
@@ -102,7 +102,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void getBasketByUsername() throws Exception {
+    void getBasketByUsernameTest() throws Exception {
         // First create a basket
         mockMvc.perform(post("/basket"));
 
@@ -114,7 +114,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void getAllBaskets() throws Exception {
+    void getAllBasketsTest() throws Exception {
         // Create a basket for the test user
         mockMvc.perform(post("/basket"));
 
@@ -127,7 +127,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void removeAllItemsFromBasket() throws Exception {
+    void removeAllItemsFromBasketTest() throws Exception {
         // First create a basket and add some items
         mockMvc.perform(post("/basket"));
         Item item1 = new Item(UUID.randomUUID(), "Item 1", BigDecimal.valueOf(10.00), "http://example.com/image1.jpg");
@@ -147,7 +147,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void deleteBasket() throws Exception {
+    void deleteBasketTest() throws Exception {
         // First create a basket
         mockMvc.perform(post("/basket"));
 
@@ -162,7 +162,7 @@ public class BasketControllerTest {
 
     @Test
     @WithMockUser(username = TEST_USERNAME)
-    void deleteAllBaskets() throws Exception {
+    void deleteAllBasketsTest() throws Exception {
         // First create a basket
         mockMvc.perform(post("/basket"));
 
